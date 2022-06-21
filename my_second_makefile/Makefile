@@ -6,7 +6,7 @@
 #    By: rda-silv <rda-silv@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/19 17:32:00 by rda-silv          #+#    #+#              #
-#    Updated: 2022/06/19 17:44:17 by rda-silv         ###   ########.fr        #
+#    Updated: 2022/06/20 23:04:34 by rda-silv         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,25 +20,32 @@ C_SRC=$(wildcard *.c)
 H_SRC=$(wildcard *.h)
 
 # object files
-OBJ=$(C_SRC=.c=.o)
+OBJ=$(C_SRC:.c=.o)
 
 # compiler
 CC=gcc
 
 # flags
-CC_FLAGS=-c	\
-		 -W	\
+CC_FLAGS=-c     \
+         -g     \
+         -W     \
+         -Wall  \
+         -Wextra\
+         -Werror\
+         -ansi  \
+         -pedantic
 
-all: printy
+# compilation and linking
+all: $(PROJ_NAME)
 
-printy: main.o helloworld.o
-		gcc -o printy main.o helloworld.o
+$(PROJ_NAME): $(OBJ)
+		$(CC) -o $@ $^
 
-main.o: main.c helloworld.h
-		gcc -o main.o main.c -c -W -Wall -ansi -pedantic
+%.o: %.c %.h
+		$(CC) -o $@ $< $(CC_FLAGS)
 
-helloworld.o: helloworld.c helloworld.h
-		gcc -o helloworld.o helloworld.c -c -W -Wall -ansi -pedantic
+main.o: main.c $(H_SRC)
+		$(CC) -o $@ $< $(CC_FLAGS)
 
 clean: 
-		rm -rf *.o *~printy
+		rm -rf *.o $(PROJ_NAME) *~
